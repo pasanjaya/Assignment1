@@ -325,7 +325,18 @@ f.close()  # close file
 
 print("#################################################################")
 print("Two find front most: Enter A")
-bt.frontMostLine()
 print("Output from back to front: Enter B")
-bt.back2front(bt.root)
 
+
+inLine = input()
+while(inLine != "Q"):
+    if(inLine == "A"):
+        print()
+        bt.frontMostLine()
+        print()
+    elif(inLine == "B"):
+        print()
+        bt.back2front(bt.root)
+        print()
+    inLine = input()
+print("++++++++++++END++++++++++++++")
