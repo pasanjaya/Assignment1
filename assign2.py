@@ -324,7 +324,7 @@ f.close()  # close file
 
 
 print("#################################################################")
-print("Two find front most: Enter A")
+print("To find front most: Enter A")
 print("Output from back to front: Enter B")
 
 
