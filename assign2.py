@@ -177,10 +177,11 @@ class bTree:
     def insertfbNode(self,rootcoordData, chkcoordData):
         if (self.root != None):
             temp = self.root
-            while (temp != None):
+            while (True):
+                print("checking coord: ", chkcoordData)
                 position, coord = self.checkingfb(temp.coordname, chkcoordData)
-                # print("checking root: ", temp.coordname)
-                # print("found position: ", position)
+                print("checking root: ", temp.coordname)
+                print("found position: ", position)
                 if (position == "front"):
                     if(temp.nfront == None):
                         newNode = Node(coord)
@@ -189,11 +190,11 @@ class bTree:
                         newNode.x2 = float(coord[1][0])
                         newNode.y2 = float(coord[1][1])
                         temp.nfront = newNode
-                        # print("root: ", temp.coordname)
-                        # print("front: ++++++++++++++++", temp.nfront.coordname)
+                        print("root: ", temp.coordname)
+                        print("front: ++++++++++++++++", temp.nfront.coordname)
                         return
                     else:
-                        # print("else")
+                        print("else")
                         temp = temp.nfront
                 elif(position == "back"):
                     if (temp.nback == None):
@@ -203,18 +204,19 @@ class bTree:
                         newNode.x2 = float(coord[1][0])
                         newNode.y2 = float(coord[1][1])
                         temp.nback = newNode
-                        # print("root: ", temp.coordname)
-                        # print("back:++++++++++++ ", temp.nback.coordname)
+                        print("root: ", temp.coordname)
+                        print("back:++++++++++++ ", temp.nback.coordname)
                         return
                     else:
-                        # print("else")
+                        print("else")
                         temp = temp.nback
                 elif(position == "on_line"):
                     temp.nlyingOn.append(coord)
-                    # print("OnLine")
+                    print("OnLine")
                     return
 
                 elif (position == "special"):
+                    ck = 0
                     if(coord[0][0] == "front"):
                         if (temp.nfront == None):
                             ncoord = coord[0][1]
@@ -224,14 +226,17 @@ class bTree:
                             newNode.x2 = float(ncoord[1][0])
                             newNode.y2 = float(ncoord[1][1])
                             temp.nfront = newNode
-                            # print("root: ", temp.coordname)
-                            # print("front:++++++++++++++++ ", temp.nfront.coordname)
+                            ck +=1
+                            print("root: ", temp.coordname)
+                            print("front:++++++++++++++++ ", temp.nfront.coordname)
 
                         else:
-                            # print("XXXX")
-                            # print(temp.nfront.coordname)
+                            print("XXXX")
+                            print(temp.nfront.coordname)
+                            #chkcoordData = coord[0][1]
                             temp = temp.nfront
-                    # print("ck: ", coord[1][0])
+                            continue
+                    print("ck: ", coord[1][0])
                     if(coord[1][0] == "back"):
                         if (temp.nback == None):
                             ncoord = coord[1][1]
@@ -241,14 +246,20 @@ class bTree:
                             newNode.x2 = float(ncoord[1][0])
                             newNode.y2 = float(ncoord[1][1])
                             temp.nback = newNode
-                            # print("root: ", temp.coordname)
-                            # print("back: +++++++++++++++++", temp.nback.coordname)
+                            ck +=1
+                            print("root: ", temp.coordname)
+                            print("back: +++++++++++++++++", temp.nback.coordname)
 
                         else:
-                            # print("else@@@")
+                            print("else@@@")
+                            # chkcoordData = coord[1][1]
                             temp = temp.nback
-                    else:
+                            continue
+                    if(ck==2):
                         print("****")
+                        return
+                    else:
+                        print("!!!!!!")
 
 
     def frontMostLine(self):
@@ -261,12 +272,61 @@ class bTree:
             self.frontLine(curNode.nfront)
 
     def back2front(self, curNode):
-        if (curNode is not None):
+        if (curNode != None):
             self.back2front(curNode.nback)
             print(curNode.coordname)
             self.back2front(curNode.nfront)
 
+    def frontBackNode(self,searchKey):
+        node = self.traversal(searchKey)
+        if(node != None):
+            # print("#### ",node.coordname)
+            if(node.nfront != None):
+                print("Front line: ", node.nfront.coordname,"\n")
+            elif(node.nfront == None):
+                print("No front line(s) for: ",node.coordname,"\n")
+            if (node.nback != None):
+                print("Back line: ",node.nback.coordname,"\n")
+            elif (node.nback == None):
+                print("No back line(s) for: ", node.coordname,"\n")
 
+            if (node.nlyingOn != []):
+                print("On line: ",node.nlyingOn,"\n")
+            elif (node.nlyingOn == []):
+                print("No on line segments for: ", node.coordname,"\n")
+
+            else:
+                print("BLA BLA BLA")
+        else:
+            print("Searching Key is not Found, maybe it intersected by a line")
+        #print(searchKey)
+
+    def traversal(self,data):
+        curNode = self.root
+        while(curNode != None):
+            # print(curNode.coordname)
+            # print(data)
+            if(curNode.coordname == data):
+                print("Found")
+                return curNode
+            elif(curNode.coordname != data):
+                position, coord = position, coord = self.checkingfb(curNode.coordname, data)
+                if(position == "front"):
+                    curNode = curNode.nfront
+                    continue
+                elif(position == "back"):
+                    curNode = curNode.nback
+                    continue
+                elif(position == "special"):
+                    if(coord[0][0] == "front"):
+                        curNode = curNode.nfront
+                        continue
+                else:
+                    print(position)
+                    break
+
+
+#------------------------------------- main()--------------------------------------#
 import ast, math
 
 bt = bTree()
@@ -323,12 +383,14 @@ while(coordList != []):
 f.close()  # close file
 
 
+
 print("#################################################################")
 print("To find front most: Enter A")
 print("Output from back to front: Enter B")
+print("To find position of given node: Enter C")
 
 
-inLine = input()
+inLine = input("On your Command: ")
 while(inLine != "Q"):
     if(inLine == "A"):
         print()
@@ -336,7 +398,17 @@ while(inLine != "Q"):
         print()
     elif(inLine == "B"):
         print()
+        print("- - - PRINTING ALL NODES FROM BACK TO FRONT - - -\n")
         bt.back2front(bt.root)
         print()
-    inLine = input()
+    elif(inLine == "C"):
+        print()
+        print("Ex:   [(4,6),(7,23)]")
+        print()
+        searchKey = input("What is your searching line?: ")
+        # searchKey = [(-4, -2), (-3.5, -0.33)] #testing
+        bt.frontBackNode(searchKey)
+        print()
+    inLine = input("On your Command: ")
+    
 print("++++++++++++END++++++++++++++")
