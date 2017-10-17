@@ -406,6 +406,7 @@ while(inLine != "Q"):
         print("Ex:   [(4,6),(7,23)]")
         print()
         searchKey = input("What is your searching line?: ")
+        searchKey = list(ast.literal_eval(searchKey))
         # searchKey = [(-4, -2), (-3.5, -0.33)] #testing
         bt.frontBackNode(searchKey)
         print()
